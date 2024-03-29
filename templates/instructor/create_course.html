@@ -1,0 +1,289 @@
+{% extends "instructor/instructor_base.html" %}
+{% load static %}
+
+{% block title %}
+Publish Course
+{% endblock  %}
+{% block content %}
+
+
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        form {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            margin-top: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            text-align: left;
+        }
+
+        input[type="text"], select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+        .btn-danger {
+            color: #fff;
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+        
+        .btn-danger:hover {
+            color: #fff;
+            background-color: #c82333;
+            border-color: #bd2130;
+        }
+        .delete-video,
+.delete-requirement,
+.delete-learn {
+    height: 36px;
+    line-height: 36px; 
+    padding: 0 10px; 
+    font-size: 14px; 
+}
+
+  </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+
+
+    
+    <body>
+    {% include "components/message.html" %}
+
+        <h1>Create/Edit Course</h1>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+        <label>Author:</label>
+            <input type="text" name="author" value="{{ request.user }}" disabled>
+
+            {{ course_form.as_p }}
+    
+            <h2>What You'll Learn</h2>
+            <div id="what_you_learn_forms">
+
+            {{ what_you_learn_formset.management_form }}
+            {% for form in what_you_learn_formset %}
+            <div class="learn-row"> <!-- Assign requirement-row class here -->
+                {{ form.as_p }}
+                <button type="button" class="delete-learn btn btn-danger" id="delete_learn_{{ forloop.counter }}">Delete</button>
+            </div>
+            {% endfor %}
+        </div>
+    <div class = "adjustbutton">
+        <button type="button" id="add_what_you_learn">Add More</button>
+</div>
+
+    
+
+    
+            <h2>Requirements</h2>
+            <div id="requirements_forms">
+                {{ requirements_formset.management_form }}
+                {% for form in requirements_formset %}
+                <div class="requirement-row"> <!-- Assign requirement-row class here -->
+                    {{ form.as_p }}
+                    <button type="button" class="delete-requirement btn btn-danger" id="delete_requirement_{{ forloop.counter }}">Delete</button>
+                </div>
+
+                {% endfor %}
+            </div>
+            <button type="button" id="add_requirement">Add More</button>
+
+          
+                                    
+                      
+    
+            <h2>Videos</h2>
+            <div id="videos_forms">
+                {{ video_formset.management_form }}
+                {% for form in video_formset %}
+                <div class="video-row"> <!-- Assign requirement-row class here -->
+                    {{ form.as_p }}
+                    <button type="button" class="delete-video btn btn-danger" id="delete_video_{{ forloop.counter }}">Delete</button>
+                </div>
+      
+
+                    {% comment %} <input type="text" name="lesson_name" placeholder="Enter Lesson Name"> {% endcomment %}
+
+                {% endfor %}
+            </div>
+            <button type="button" id="add_video">Add More</button>
+
+
+
+                    
+
+        <br>
+
+    
+            <button type="submit" class=" btn btn-primary" style="width:100%;">Submit</button>
+        </form>
+    
+
+   
+        <script>
+            
+            
+            $(document).ready(function() {
+                // Function to handle click event on delete buttons for Requirements
+                $('#requirements_forms').on('click', '.delete-requirement', function() {
+                    $(this).closest('.requirement-row').remove(); // Remove the closest parent requirement row
+                    
+
+                });
+
+
+                  // Function to handle click event on delete buttons for What You Learn
+    $('#what_you_learn_forms').on('click', '.delete-learn', function() {
+        $(this).closest('.learn-row').remove(); // Remove the closest parent learn row
+    });
+
+
+    $('#videos_forms').on('click', '.delete-video', function() {
+        $(this).closest('.video-row').remove(); // Remove the closest parent video row
+    });
+                
+                
+              
+                 
+                // Add more What You Learn
+               
+$('#add_what_you_learn').click(function() {
+    var form_idx = $('#id_what_you_learn-TOTAL_FORMS').val();
+    var newLearn = $('#empty_what_you_learn_form').html().replace(/__prefix__/g, form_idx);
+
+    // Append the new "What You Learn" section
+    $('#what_you_learn_forms').append('<div class="learn-row">' + newLearn + '</div>');
+
+    // Add a delete button for the newly added "What You Learn" section
+    var newDeleteButton = $('<button type="button" class="delete-learn btn btn-danger">Delete</button>');
+    newDeleteButton.click(function() {
+        $(this).closest('.learn-row').remove(); // Remove the closest parent "What You Learn" row
+    });
+
+    // Append the delete button
+    $('.learn-row').last().append(newDeleteButton);
+
+    $('#id_what_you_learn-TOTAL_FORMS').val(parseInt(form_idx) + 1);
+});
+    
+        
+  
+          // Add more Requirements
+    $('#add_requirement').click(function() {
+        var form_idx = $('#id_requirements-TOTAL_FORMS').val();
+        var newRequirement = $('#empty_requirement_form').html().replace(/__prefix__/g, form_idx);
+
+        // Append the new requirement
+        $('#requirements_forms').append('<div class="requirement-row">' + newRequirement + '</div>');
+
+        // Add a delete button for the newly added requirement
+        var newDeleteButton = $('<button type="button" class="delete-requirement btn btn-danger">Delete</button>');
+        newDeleteButton.click(function() {
+            $(this).closest('.requirement-row').remove(); // Remove the closest parent requirement row
+        });
+
+        // Append the delete button
+        $('.requirement-row').last().append(newDeleteButton);
+
+        $('#id_requirements-TOTAL_FORMS').val(parseInt(form_idx) + 1);
+    });
+
+                
+
+                // Add more Videos
+               
+$('#add_video').click(function() {
+    var form_idx = $('#id_videos-TOTAL_FORMS').val();
+    var newVideo = $('#empty_video_form').html().replace(/__prefix__/g, form_idx);
+
+    // Append the new video section
+    $('#videos_forms').append('<div class="video-row">' + newVideo + '</div>');
+
+    // Add a delete button for the newly added video section
+    var newDeleteButton = $('<button type="button" class="delete-video btn btn-danger">Delete</button>');
+    newDeleteButton.click(function() {
+        $(this).closest('.video-row').remove(); // Remove the closest parent video row
+    });
+
+    // Append the delete button
+    $('.video-row').last().append(newDeleteButton);
+
+    $('#id_videos-TOTAL_FORMS').val(parseInt(form_idx) + 1);
+});
+
+
+
+                
+
+
+
+                 // Add more Lessons
+           
+            });
+         
+
+        </script>
+
+
+        <div id="empty_what_you_learn_form" style="display:none;">
+            {{ what_you_learn_formset.empty_form.as_p }}
+        </div>
+    
+        <div id="empty_requirement_form" style="display:none;">
+            {{ requirements_formset.empty_form.as_p }}
+        </div>
+    
+        <div id="empty_video_form" style="display:none;">
+            {{ video_formset.empty_form.as_p }}
+      
+        </div>
+
+
+{% endblock %}

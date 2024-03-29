@@ -1,0 +1,158 @@
+{% extends 'instructor/instructor_base.html' %}
+{% block title %}
+Profile
+{% endblock %}
+{% block content %}
+
+
+
+
+
+    <header class="py-8 py-md-11" style="background-image: none;">
+        <div class="container text-center py-xl-2">
+            <h1 class="display-4 fw-semi-bold mb-0">Profile Update</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb breadcrumb-scroll justify-content-center">
+                    <li class="breadcrumb-item">
+                        <a class="text-gray-800" href="#">
+                            Home
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item text-gray-800 active" aria-current="page">
+                        Profile Update
+                    </li>
+                </ol>
+            </nav>
+        </div>
+        <!-- Img -->
+        <img class="d-none img-fluid" src="...html" alt="...">
+    </header>
+    <!-- Card -->
+
+            <div class="card" style="width:80%;margin-left:10%;">
+    {% include "components/message.html" %}
+    <br>
+
+              <div class="card-body" >
+             
+                <form method="post" enctype="multipart/form-data" action="{% url 'instructor_profile_update' %}">
+                    {% csrf_token %}
+                  <div class="row">
+                            <div class="col">
+                             <div class="form-group mb-4">
+                                <label>Email address</label>
+                                <input type="email" class="form-control" placeholder="Enter Email" name="email" value="{{user.email}}" readonly>
+                             </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group mb-4">
+                               <label>Username</label>
+                               <input type="text" class="form-control" placeholder="Enter Username" name="username" value="{{user.username}}" readonly>
+                            </div>
+                        </div>
+                        <div class="w-100"></div>
+
+                        
+                      <div class="col">
+                            <div class="form-group mb-4">
+                               <label>Password</label>
+                               <input type="password" class="form-control" placeholder="Fill Only If You Want To Change Password" name="password">
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group mb-4">
+                               <label>Domain</label>
+                               <input type="text" class="form-control" placeholder="i.e. Python Developer etc" name="domain" required>
+                            </div>
+                        </div>
+                        <div class="w-100"></div>
+
+                        <div class="col">
+                            <label>Category of Course</label>
+                            <input type="text" class="form-control" placeholder="i.e. Python,PHP etc" name="category" required>
+
+                            {% comment %} <select class="form-select" name="category">
+                                <option>Python</option>
+                                <option>PHP</option>
+                                <option>Java</option>
+                                <option>React Js</option>
+                                <option>Angular</option>
+
+                              </select> {% endcomment %}
+                        </div>
+
+                        <div class="col">
+                            <label>Gender</label>
+
+                            <select class="form-select" name="gender">
+                                <option>Male</option>
+                                <option>Female</option>
+                                <option>Other</option>
+                              
+
+                              </select>
+
+                            {% comment %} <div class="row">
+
+                                    <div class="form-check col">
+                                        <input class="form-check-input" type="radio" name="gender" id="flexRadioDefault1">
+                                        <label class="form-check-label" for="flexRadioDefault1">
+                                        Male
+                                        </label>
+                                    </div>
+                                    <div class="form-check col">
+                                        <input class="form-check-input" type="radio"  name="gender" id="flexRadioDefault2" checked>
+                                        <label class="form-check-label" for="flexRadioDefault2">
+                                        Female
+                                        </label>
+                                    </div>
+                                    <div class="form-check col">
+                                        <input class="form-check-input" type="radio"  name="gender" id="flexRadioDefault2" checked>
+                                        <label class="form-check-label" for="flexRadioDefault2">
+                                        Other
+                                        </label>
+                                    </div>
+                            </div> {% endcomment %}
+                        </div>
+                        <div class="w-100"></div>
+
+                    
+                        <div class="col">
+                            <div class="form-group mb-4">
+
+                            <label >Mobile Number</label>
+                            <input type="tel" id="phone" class="form-control"  name="phone" pattern="[0-9]{3}[0-9]{3}[0-9]{4}" placeholder="###-###-####" required>
+
+                         </div>
+                        </div>
+                        <div class="col">
+                            {% comment %} <form method="post" enctype="multipart/form-data">
+                                {% csrf_token %} {% endcomment %}
+                            <label for="image"> Select Profile Picture</label>
+                            <input type="file" id="image" name="image"  class="form-control" accept="image/*" required>
+                            {% comment %} </form> {% endcomment %}
+                     
+                        </div>
+                        <div class="w-100"></div>
+                        <div class="col">
+                            <div class="form-group mb-4">
+                               <label>Bio</label>
+                               <input type="text" class="form-control" placeholder="Tell us about your expertise, experience, and teaching philosophy." name="bio" required>
+                            </div>
+                        </div>
+
+
+                        
+
+
+                    </div>
+
+                  
+                  <button type="submit" class="btn btn-primary">Update Profile </button>
+                </form>
+
+              </div>
+            </div>
+
+         
+{% endblock %}
